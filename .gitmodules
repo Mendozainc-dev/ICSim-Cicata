@@ -1,0 +1,3 @@
+[submodule "ICSim"]
+	path = ICSim
+	url = https://github.com/zynamics/ICSim.git
