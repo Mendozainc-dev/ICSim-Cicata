@@ -5,8 +5,8 @@ from rich.table import Table
 console = Console(width=100)
 
 # Variable to indicate styles
-tittle = Style(color="white", bold=True) #Title style in color white and bold, changue the value of color to change the color of the title if you want
-error = Style(color="red", blink=True, bold=True) #Error style in color red, blink and bold, changue the value of color to change the color of the error if you want, only used in logs (console.log)
+tittle = Style(color="white", bold=True) 
+error = Style(color="red", blink=True, bold=True) 
 
 
 # This function is used to display the main menu of the project, it shows a brief description of the project and the options available for the user to select
@@ -28,8 +28,21 @@ def Menu():
 
     styleOptions = Style(color="white", bold=True)
 
-    console.print("1.Informacion del proyecto", style=styleOptions)
-    console.print("2.Inicio del sistema de evaluacion de vulnerabilidades mediante fuzzing", style=styleOptions)
-    console.print("3.Analisis de resultados y reportes de vulnerabilidades detectadas\n", style=styleOptions)
+    console.print("1 Informacion del proyecto", style=styleOptions)
+    console.print("2 Inicio del sistema de evaluacion de vulnerabilidades mediante fuzzing", style=styleOptions)
+    console.print("3 Analisis de resultados y reportes de vulnerabilidades detectadas\n", style=styleOptions)
+    optionSelected()
+
+def optionSelected():
+    opciones = input()
+    if opciones == "1":
+        console.print("\nInformacion del proyecto:\n", style=tittle, justify="full")
+    elif opciones == "2":
+        console.print("\nInicio del sistema de evaluacion de vulnerabilidades mediante fuzzing:\n", style=tittle, justify="full")
+    elif opciones == "3":
+        console.print("\nAnalisis de resultados y reportes de vulnerabilidades detectadas:\n", style=tittle, justify="full")
+    else:
+        console.log("Opcion no valida, por favor seleccione una opcion del menu\n", style=error)
+        Menu()
 
 Main()
