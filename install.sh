@@ -9,22 +9,24 @@ if [ -d "$APP_DIR/.git" ]; then
     echo "Actualizando..."
     git -C "$APP_DIR" pull --ff-only
 else
-    echo "Descargando Proyecto-fuzz-cicata"
+    echo "Descargando Proyecto-fuzz-cicata..."
     git clone "$REPO" "$APP_DIR"
 fi
 
 cd "$APP_DIR"
 
 if [ ! -d ".venv" ]; then
-    echo "Creando entorno virtual necesario para la ejecucion del proyecto"
+    echo "Creando entorno virtual necesario para la ejecución del proyecto..."
     python3 -m venv .venv
-
-    echo "Instalando dependencias..."
-    .venv/bin/pip install -r requirements.txt
 fi
 
-if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" || "$OSTYPE" == "win32" ]]; then
-    .venv/Scripts/python main/main.py
+echo "Verificando e instalando dependencias..."
+if [ -f ".venv/Scripts/python.exe" ]; then
+    .venv/Scripts/python.exe -m pip install -r requirements.txt
+    PYTHON=".venv/Scripts/python.exe"
 else
-    .venv/bin/python main/main.py
+    .venv/bin/python -m pip install -r requirements.txt
+    PYTHON=".venv/bin/python"
 fi
+
+"$PYTHON" main/main.py
