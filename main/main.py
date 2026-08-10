@@ -1,3 +1,7 @@
+#*In this project, a virtualized environment is created to evaluate vulnerabilities through fuzzing in communication protocols of vehicles. The system generates test cases to detect potential vulnerabilities in the communication protocols used by vehicles. and the results of the evaluation are analyzed and reported to improve the security of vehicle communication systems.
+
+# Programer: Mendozainc-dev, working for the asociation cicata (centro de investigacion en computacion aplicada y tecnologia avanzada) queretaro, mexico.
+
 from rich.console import Console
 from rich.style import Style
 from rich.table import Table
@@ -7,6 +11,7 @@ console = Console(width=100)
 # Variable to indicate styles
 tittle = Style(color="white", bold=True) 
 error = Style(color="red", blink=True, bold=True) 
+# note: In this style (error), you can change the blink parameter to false if you want to disable the blinking effect for error messages.
 
 
 # This function is used to display the main menu of the project, it shows a brief description of the project and the options available for the user to select
