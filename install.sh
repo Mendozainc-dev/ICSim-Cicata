@@ -20,7 +20,7 @@ if [ ! -d ".venv" ]; then
     python3 -m venv .venv
 fi
 
-echo "Verificando e instalando dependencias..."
+echo "Verificando las dependencias del proyecto (requirements.txt)"
 if [ -f ".venv/Scripts/python.exe" ]; then
     .venv/Scripts/python.exe -m pip install -r main/requirements.txt
     PYTHON=".venv/Scripts/python.exe"
