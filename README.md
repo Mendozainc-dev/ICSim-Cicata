@@ -8,7 +8,7 @@ Installation is very simple with this command, you can use it to install and use
 >Your first question is, where is my project? This command is program, to install all the files in a single directory, and where is the directory, this directory is always in the home folder, so Just look in the Home folder
 
 ```
-curl -fsSL https://raw.githubusercontent.com/Mendozainc-dev/ICSim-Cicata/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Mendozainc-dev/ICSim-Cicata/main/install.sh | bash
 ```
 
 ### Architecture
