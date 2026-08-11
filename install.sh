@@ -29,4 +29,6 @@ else
     PYTHON=".venv/bin/python"
 fi
 
+clear
+
 "$PYTHON" main/main.py < /dev/tty
