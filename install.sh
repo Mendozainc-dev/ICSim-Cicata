@@ -5,18 +5,18 @@ APP_DIR="$HOME/.Proyecto-fuzz-cicata"
 REPO="https://github.com/Mendozainc-dev/ICSim-Cicata.git"
 
 if [ -d "$APP_DIR/.git" ]; then
-    echo "El proyecto ya fue instalado."
-    echo "Actualizando..."
+    echo "El proyecto ya fue instalado"
+    echo "Se hara un pull para actualizar el proyecto"
     git -C "$APP_DIR" pull --ff-only
 else
-    echo "Descargando Proyecto-fuzz-cicata..."
+    echo "Descargando Proyecto-fuzz-cicata"
     git clone "$REPO" "$APP_DIR"
 fi
 
 cd "$APP_DIR"
 
 if [ ! -d ".venv" ]; then
-    echo "Creando entorno virtual necesario para la ejecución del proyecto..."
+    echo "Se creara un entorno virtual para el proyecto"
     python3 -m venv .venv
 fi
 
