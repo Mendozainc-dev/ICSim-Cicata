@@ -22,10 +22,10 @@ fi
 
 echo "Verificando e instalando dependencias..."
 if [ -f ".venv/Scripts/python.exe" ]; then
-    .venv/Scripts/python.exe -m pip install -r requirements.txt
+    .venv/Scripts/python.exe -m pip install -r main/requirements.txt
     PYTHON=".venv/Scripts/python.exe"
 else
-    .venv/bin/python -m pip install -r requirements.txt
+    .venv/bin/python -m pip install -r main/requirements.txt
     PYTHON=".venv/bin/python"
 fi
 
