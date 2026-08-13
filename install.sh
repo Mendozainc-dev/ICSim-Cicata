@@ -15,8 +15,16 @@ fi
 
 cd "$APP_DIR"
 
-echo "Inicializando submodulos del proyecto"
-git submodule update --init --recursive
+echo "Descargando ICSim desde ZIP (sin Git ni SSH)"
+if [ ! -d "ICSim" ] || [ -z "$(ls -A ICSim 2>/dev/null)" ]; then
+    tmp_zip="/tmp/ICSim.zip"
+    curl -L "https://github.com/zynamics/ICSim/archive/refs/heads/master.zip" -o "$tmp_zip"
+    rm -rf "ICSim"
+    mkdir -p "ICSim"
+    unzip -q "$tmp_zip" -d "/tmp/ICSim_extract"
+    cp -R "/tmp/ICSim_extract/ICSim-master/"* "ICSim/"
+    rm -rf "/tmp/ICSim_extract" "$tmp_zip"
+fi
 
 if [ ! -d ".venv" ]; then
     echo "Se creara un entorno virtual para el proyecto"
