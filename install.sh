@@ -15,6 +15,9 @@ fi
 
 cd "$APP_DIR"
 
+echo "Inicializando submodulos del proyecto"
+git submodule update --init --recursive
+
 if [ ! -d ".venv" ]; then
     echo "Se creara un entorno virtual para el proyecto"
     python3 -m venv .venv
