@@ -59,7 +59,7 @@ def optionSelected():
     elif opciones == "5":
         console.print("\nConfiguracion del sistema:\n", style=tittle, justify="full")
         commands.clearScreen()
-        configuration = Configuration()
+        configuration = Configuration(on_exit=Main)
         configuration.optionsMenu()
     else:
         console.log("Opcion no valida, por favor seleccione una opcion del menu\n", style=error)
