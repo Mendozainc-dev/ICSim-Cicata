@@ -1,4 +1,6 @@
 {
+  "project.title": "Virtualized environment for fuzzing-based vulnerability assessment of vehicle communication protocols",
+  "project.description": "This project assesses vulnerabilities in vehicle communication protocols through fuzzing. It uses a virtualized environment to simulate vehicles and their communication systems, automatically generating test cases to detect potential vulnerabilities.",
   "menu.title": "Select an option from the menu",
   "menu.option_1": "Project information",
   "menu.option_2": "Start the vulnerability assessment system using fuzzing",
@@ -22,7 +24,10 @@
   "config.option_3": "Creator information",
   "config.option_4": "Exit configuration",
   "config.reinstalling": "Reinstalling packages",
+  "config.creator.info": "Created by Mendozainc-dev for CICATA (Center for Research in Applied Computing and Advanced Technology), Queretaro, Mexico.",
   "config.language.prompt": "Select the language (es/en):",
+  "language.changed": "Language changed to English",
+  "language.invalid": "Invalid language. Please select 1 or 2.",
   "language.es": "Spanish",
   "language.en": "English"
 }

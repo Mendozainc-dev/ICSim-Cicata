@@ -1,4 +1,6 @@
 {
+  "project.title": "Entorno virtualizado para la evaluación de vulnerabilidades mediante fuzzing en protocolos de comunicación vehicular",
+  "project.description": "Este proyecto evalúa vulnerabilidades en protocolos de comunicación vehicular mediante fuzzing. Utiliza un entorno virtualizado para simular vehículos y sus sistemas de comunicación, generando automáticamente casos de prueba para detectar posibles vulnerabilidades.",
   "menu.title": "Seleccione una opción del menú",
   "menu.option_1": "Información del proyecto",
   "menu.option_2": "Inicio del sistema de evaluación de vulnerabilidades mediante fuzzing",
@@ -22,7 +24,10 @@
   "config.option_3": "Información del creador",
   "config.option_4": "Salir de configuración",
   "config.reinstalling": "Reinstalando paquetes",
+  "config.creator.info": "Creado por Mendozainc-dev para CICATA (Centro de Investigación en Computación Aplicada y Tecnología Avanzada), Querétaro, México.",
   "config.language.prompt": "Seleccione el idioma (es/en):",
+  "language.changed": "Idioma cambiado a Español",
+  "language.invalid": "Idioma no válido. Seleccione 1 o 2.",
   "language.es": "Español",
   "language.en": "Inglés"
 }

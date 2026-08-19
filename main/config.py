@@ -31,20 +31,23 @@ class Configuration:
             if lang_option == "1":
                 translator.set_language("es")
                 commands.clearScreen()
-                console.print("Idioma cambiado a Español", style=tittle, justify="full")
+                console.print(translator.t("language.changed"), style=tittle, justify="full")
                 self.optionsMenu()
             elif lang_option == "2":
                 translator.set_language("en")
                 commands.clearScreen()
-                console.print("Language changed to English", style=tittle, justify="full")
+                console.print(translator.t("language.changed"), style=tittle, justify="full")
                 self.optionsMenu()
             else:
-                console.log("Idioma no válido. Seleccione 1 o 2.\n", style=error, justify="full")
+                console.log(translator.t("language.invalid") + "\n", style=error, justify="full")
                 self.optionsMenu()
         elif options == "2":
             commands.clearScreen()
             console.log(translator.t("config.reinstalling") + "\n", style=error, justify="full")
             commands.installPackages()
+        elif options == "3":
+            console.print("\n" + translator.t("config.creator.info") + "\n", style=tittle, justify="full")
+            self.optionsMenu()
         elif options == "4":
             commands.clearScreen()
             if self.on_exit is not None:
