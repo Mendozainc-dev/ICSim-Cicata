@@ -2,6 +2,8 @@
 
 # Programer: Mendozainc-dev, working for the asociation cicata (centro de investigacion en computacion aplicada y tecnologia avanzada) queretaro, mexico.
 
+import sys
+
 from scripts.commands import commands
 from config import Configuration
 from rich.console import Console
@@ -29,6 +31,29 @@ def Main():
     console.print(table, justify="center")
     menu = Menu()
 
+def showProjectInfo():
+    commands.clearScreen()
+
+    info = "\n\n".join([
+        translator.t("project.description"),
+        translator.t("info.goal.description"),
+        translator.t("info.environment.description"),
+        translator.t("info.components.description"),
+        translator.t("info.usage.description"),
+        translator.t("info.author.description"),
+    ])
+
+    table = Table(title="\n", show_header=True, header_style="bold white", border_style="white")
+    table.add_column(translator.t("project.title"), justify="full", style=tittle, no_wrap=False)
+    table.add_row(info)
+    console.print(table, justify="center")
+
+    console.print("\n" + translator.t("info.back") + "\n", style=tittle, justify="center")
+    input()
+    commands.clearScreen()
+    Main()
+
+
 # This function is used to display the menu options, later the user can select an option to execute a specific function
 def Menu():
 
@@ -39,15 +64,15 @@ def Menu():
     console.print("2 " + translator.t("menu.option_2"), style=styleOptions)
     console.print("3 " + translator.t("menu.option_3"), style=styleOptions)
     console.print("4 " + translator.t("menu.option_4"), style=styleOptions)
-    console.print("5 " + translator.t("menu.option_5") + "\n", style=styleOptions)
+    console.print("5 " + translator.t("menu.option_5"), style=styleOptions)
+    console.print("6 " + translator.t("menu.option_6") + "\n", style=styleOptions)
     optionSelected()
     
 
 def optionSelected():
     opciones = input().strip()
     if opciones == "1":
-        console.print("\n" + translator.t("project.info") + "\n", style=tittle, justify="full")
-        commands.clearScreen()
+        showProjectInfo()
     elif opciones == "2":
         console.print("\n" + translator.t("project.start") + "\n", style=tittle, justify="full")
     elif opciones == "3":
@@ -62,6 +87,10 @@ def optionSelected():
         commands.clearScreen()
         configuration = Configuration(on_exit=Main)
         configuration.optionsMenu()
+    elif opciones == "6":
+        commands.clearScreen()
+        console.print("\n" + translator.t("project.exit") + "\n", style=tittle, justify="center")
+        sys.exit(0)
     else:
         console.log(translator.t("menu.invalid") + "\n", style=error)
         Menu()

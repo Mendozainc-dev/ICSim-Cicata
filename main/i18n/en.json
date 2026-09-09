@@ -7,6 +7,7 @@
   "menu.option_3": "Analysis of results and reports of detected vulnerabilities",
   "menu.option_4": "Versions of the packages installed in the virtualized environment",
   "menu.option_5": "System configuration",
+  "menu.option_6": "Close the program",
   "menu.invalid": "Invalid option, please select an option from the menu",
   "config.title": "System configuration",
   "config.language": "Change language",
@@ -18,6 +19,7 @@
   "project.analysis": "Analysis of results and reports of detected vulnerabilities:",
   "project.versions": "Versions of the packages installed in the virtualized environment:",
   "project.config": "System configuration:",
+  "project.exit": "Developed by Mendozainc-dev",
   "config.menu.title": "Select an option from the menu:",
   "config.option_1": "Change language",
   "config.option_2": "Reinstall packages",
@@ -29,5 +31,16 @@
   "language.changed": "Language changed to English",
   "language.invalid": "Invalid language. Please select 1 or 2.",
   "language.es": "Spanish",
-  "language.en": "English"
+  "language.en": "English",
+  "info.back": "Press Enter to return to the main menu",
+  "info.goal.title": "Project goal",
+  "info.goal.description": "Build a virtualized lab environment to study vehicle communication protocols (CAN bus) safely, without a real vehicle. It is intended for research and training at CICATA, Queretaro.",
+  "info.environment.title": "Virtualized environment",
+  "info.environment.description": "The lab uses SocketCAN (vcan0 interface) and ICSim (Instrument Cluster Simulator by OpenGarages): a dashboard and a controls panel that exchange simulated CAN frames.",
+  "info.components.title": "Components",
+  "info.components.description": "ICSim (icsim and controls) simulates the vehicle cluster. This Python CLI drives the menu, language, and settings. The installer (install.sh) prepares system packages, Python libraries, and the Meson build.",
+  "info.usage.title": "How to use the system",
+  "info.usage.description": "After installing with install.sh, this menu lets you read project information, start the assessment, review results, check package versions, and configure the system.",
+  "info.author.title": "Credits",
+  "info.author.description": "Developed by Mendozainc-dev for CICATA (Center for Research in Applied Computing and Advanced Technology), Queretaro, Mexico. The cluster simulator is based on ICSim by OpenGarages."
 }

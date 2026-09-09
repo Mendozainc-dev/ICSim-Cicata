@@ -7,6 +7,7 @@
   "menu.option_3": "Análisis de resultados y reportes de vulnerabilidades detectadas",
   "menu.option_4": "Versiones de los paquetes instalados en el entorno virtualizado",
   "menu.option_5": "Configuración del sistema",
+  "menu.option_6": "Cerrar el programa",
   "menu.invalid": "Opción no válida, por favor seleccione una opción del menú",
   "config.title": "Configuración del sistema",
   "config.language": "Cambio de idioma",
@@ -18,6 +19,7 @@
   "project.analysis": "Análisis de resultados y reportes de vulnerabilidades detectadas:",
   "project.versions": "Versiones de los paquetes instalados en el entorno virtualizado:",
   "project.config": "Configuración del sistema:",
+  "project.exit": "Desarrollado por Mendozainc-dev",
   "config.menu.title": "Seleccione una opción del menú:",
   "config.option_1": "Cambiar idioma",
   "config.option_2": "Reinstalación de paquetes",
@@ -29,5 +31,16 @@
   "language.changed": "Idioma cambiado a Español",
   "language.invalid": "Idioma no válido. Seleccione 1 o 2.",
   "language.es": "Español",
-  "language.en": "Inglés"
+  "language.en": "Inglés",
+  "info.back": "Presione Enter para volver al menú principal",
+  "info.goal.title": "Objetivo del proyecto",
+  "info.goal.description": "Crear un entorno virtualizado de laboratorio para estudiar protocolos de comunicación vehicular (bus CAN) de forma segura, sin usar un vehículo real. Está orientado a investigación y formación en CICATA, Querétaro.",
+  "info.environment.title": "Entorno virtualizado",
+  "info.environment.description": "El laboratorio usa SocketCAN (interfaz vcan0) e ICSim (Instrument Cluster Simulator de OpenGarages): un tablero y un panel de controles que intercambian tramas CAN simuladas.",
+  "info.components.title": "Componentes",
+  "info.components.description": "ICSim (icsim y controls) simula el cluster del vehículo. Esta CLI en Python orquesta el menú, el idioma y la configuración. El instalador (install.sh) prepara dependencias del sistema, librerías de Python y la compilación con Meson.",
+  "info.usage.title": "Uso del sistema",
+  "info.usage.description": "Después de instalar con install.sh, este menú permite consultar información del proyecto, iniciar la evaluación, revisar resultados, ver versiones de paquetes y configurar el sistema.",
+  "info.author.title": "Créditos",
+  "info.author.description": "Desarrollado por Mendozainc-dev para CICATA (Centro de Investigación en Computación Aplicada y Tecnología Avanzada), Querétaro, México. El simulador de tablero se basa en ICSim de OpenGarages."
 }
