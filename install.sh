@@ -15,6 +15,8 @@ if [[ "$APP_DIR" != "${SCRIPT_DIR:-}" ]]; then
     if [[ -d "$APP_DIR/.git" ]]; then
         echo "El proyecto ya fue instalado"
         echo "Se hara un pull para actualizar el proyecto"
+        find "$APP_DIR" -type d -name '__pycache__' -prune -exec rm -rf {} + 2>/dev/null || true
+        find "$APP_DIR" -type f -name '*.pyc' -delete 2>/dev/null || true
         git -C "$APP_DIR" pull --ff-only
     else
         echo "Descargando Proyecto-fuzz-cicata"
