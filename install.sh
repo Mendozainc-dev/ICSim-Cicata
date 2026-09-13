@@ -127,12 +127,44 @@ EOF
   echo "Comando global 'iov-fuzz' instalado correctamente."
 }
 
+open_simulator_terminal() {
+  local title="$1"
+  local command="$2"
+  local log_file="$APP_DIR/${title// /_}.log"
+  local run_command="cd '$ICSIM_DIR/builddir' && $command"
+
+  if command -v gnome-terminal >/dev/null 2>&1; then
+    gnome-terminal --title "$title" -- bash -lc "$run_command; exec bash" >/dev/null 2>&1 &
+  elif command -v konsole >/dev/null 2>&1; then
+    konsole --new-tab -p "tabtitle=$title" -e bash -lc "$run_command; exec bash" >/dev/null 2>&1 &
+  elif command -v xfce4-terminal >/dev/null 2>&1; then
+    xfce4-terminal --title "$title" --command "bash -lc \"$run_command; exec bash\"" >/dev/null 2>&1 &
+  elif command -v xterm >/dev/null 2>&1; then
+    xterm -T "$title" -e bash -lc "$run_command; exec bash" >/dev/null 2>&1 &
+  else
+    echo "No se encontro una terminal grafica compatible. Ejecutando $title en segundo plano."
+    echo "Log: $log_file"
+    (
+      cd "$ICSIM_DIR/builddir"
+      $command
+    ) >"$log_file" 2>&1 &
+  fi
+}
+
+start_icsim_simulators() {
+  echo "Iniciando simuladores ICSim"
+  open_simulator_terminal "ICSim" "./icsim vcan0"
+  open_simulator_terminal "ICSim Controls" "./controls vcan0"
+  sleep 1
+}
+
 install_system_packages
 setup_vcan
 compile_icsim
 install_python_packages
 verify_icsim
 create_global_command
+start_icsim_simulators
 
 clear
 
