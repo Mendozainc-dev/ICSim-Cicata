@@ -82,7 +82,7 @@ def optionSelected():
     elif opciones == "2":
         commands.clearScreen()
         commands.start_simulators()
-            menu_script()
+        menu_script()
     elif opciones == "3":
         console.print("\n" + translator.t("project.analysis") + "\n", style=tittle, justify="full")
     elif opciones == "4":
