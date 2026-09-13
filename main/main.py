@@ -4,6 +4,8 @@
 
 import sys
 
+
+from scripts.scripts_menu import menu_script
 from scripts.commands import commands
 from config import Configuration
 from rich.console import Console
@@ -11,16 +13,20 @@ from rich.style import Style
 from rich.table import Table
 from lang import translator
 
+
+
 console = Console(width=100)
 
 # Variable to indicate styles
-tittle = Style(color="white", bold=True) 
-error = Style(color="red", blink=True, bold=True) 
+tittle = Style(color="white", bold=True)
+error = Style(color="red", blink=True, bold=True)
 # note: In this style (error), you can change the blink parameter to false if you want to disable the blinking effect for error messages.
 
 
 # This function is used to display the main menu of the project, it shows a brief description of the project and the options available for the user to select
 def Main():
+
+    commands.clearScreen()
 
     table = Table(title="\n", show_header=True, header_style="bold white", border_style="white")
 
@@ -67,14 +73,16 @@ def Menu():
     console.print("5 " + translator.t("menu.option_5"), style=styleOptions)
     console.print("6 " + translator.t("menu.option_6") + "\n", style=styleOptions)
     optionSelected()
-    
+
 
 def optionSelected():
     opciones = input().strip()
     if opciones == "1":
         showProjectInfo()
     elif opciones == "2":
-        console.print("\n" + translator.t("project.start") + "\n", style=tittle, justify="full")
+        commands.clearScreen()
+        commands.start_simulators()
+            menu_script()
     elif opciones == "3":
         console.print("\n" + translator.t("project.analysis") + "\n", style=tittle, justify="full")
     elif opciones == "4":

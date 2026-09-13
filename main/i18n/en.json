@@ -42,5 +42,9 @@
   "info.usage.title": "How to use the system",
   "info.usage.description": "After installing with install.sh, this menu lets you read project information, start the assessment, review results, check package versions, and configure the system.",
   "info.author.title": "Credits",
-  "info.author.description": "Developed by Mendozainc-dev for CICATA (Center for Research in Applied Computing and Advanced Technology), Queretaro, Mexico. The cluster simulator is based on ICSim by OpenGarages."
+  "info.author.description": "Developed by Mendozainc-dev for CICATA (Center for Research in Applied Computing and Advanced Technology), Queretaro, Mexico. The cluster simulator is based on ICSim by OpenGarages.",
+  "menu.script_title": "Script menu",
+  "first.script": "First script description and execution",
+  "second.script": "Second script description and execution",
+  "third.script": "Third script description and execution"
 }

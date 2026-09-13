@@ -19,7 +19,7 @@ ICSIM_CAN_IDS = [
 
 
 class RandomCANFuzzer:
-    def __init__(self, interface: str = "vcan0", delay: float = 0.01, target_ids: Optional[List[int]] = None):
+    def __init__(self, interface: str = 'vcan0', delay: float = 0.01, target_ids: Optional[List[int]] = None):
         self.interface = interface
         self.delay = delay
         self.target_ids = target_ids if target_ids else ICSIM_CAN_IDS
@@ -85,6 +85,14 @@ class RandomCANFuzzer:
 def handle_signal(sig, frame):
     sys.exit(0)
 
+
+    def run(self, max_packets: int = 0):
+        self.connect()
+        self.start_fuzzing(max_packets)
+
+    def run(self, max_packets: int = 0):
+        self.connect()
+        self.start_fuzzing(max_packets)
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, handle_signal)

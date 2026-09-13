@@ -42,5 +42,9 @@
   "info.usage.title": "Uso del sistema",
   "info.usage.description": "Después de instalar con install.sh, este menú permite consultar información del proyecto, iniciar la evaluación, revisar resultados, ver versiones de paquetes y configurar el sistema.",
   "info.author.title": "Créditos",
-  "info.author.description": "Desarrollado por Mendozainc-dev para CICATA (Centro de Investigación en Computación Aplicada y Tecnología Avanzada), Querétaro, México. El simulador de tablero se basa en ICSim de OpenGarages."
+  "info.author.description": "Desarrollado por Mendozainc-dev para CICATA (Centro de Investigación en Computación Aplicada y Tecnología Avanzada), Querétaro, México. El simulador de tablero se basa en ICSim de OpenGarages.",
+  "menu.script_title": "Menú de scripts",
+  "first.script": "Descripción y ejecion del primer script",
+  "second.script": "Descripción y ejecucion del segundo script",
+  "third.script": "Descripción y ejecucion del tercer script"
 }
