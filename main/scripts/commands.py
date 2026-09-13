@@ -21,7 +21,7 @@ class Commands:
         subprocess.run("meson compile", shell=True)
 
 commands = Commands()
-    
-    def start_simulators(self):
-        subprocess.Popen(['gnome-terminal', '--', './icsim', 'vcan0'])
-        subprocess.Popen(['gnome-terminal', '--', './controls', 'vcan0'])
+
+def start_simulators():
+    subprocess.Popen(['gnome-terminal', '--', './icsim', 'vcan0'])
+    subprocess.Popen(['gnome-terminal', '--', './controls', 'vcan0'])
