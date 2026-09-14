@@ -31,26 +31,27 @@ ICSIM_DIR="$APP_DIR/ICSim-master"
 REQUIREMENTS="$APP_DIR/main/requirements.txt"
 
 install_system_packages() {
-  echo "Instalando dependencias del sistema para Fedora (dnf)"
+  echo "Instalando dependencias del sistema para Debian, Ubuntu, Kali o similares (apt)"
 
-  if command -v dnf >/dev/null 2>&1; then
-    sudo dnf install -y \
+  if command -v apt-get >/dev/null 2>&1; then
+    sudo apt-get update
+    sudo apt-get install -y \
       can-utils \
       curl \
       git \
       python3 \
       python3-pip \
-      python3-devel \
-      SDL2-devel \
-      SDL2_image-devel \
+      python3-dev \
+      libsdl2-dev \
+      libsdl2-image-dev \
       gcc \
       make \
       meson \
       ninja-build \
-      iproute \
+      iproute2 \
       kmod
   else
-    echo "Error: No se encontro dnf. Este script es para Fedora o sistemas basados en Fedora."
+    echo "Error: No se encontro apt-get. Este script es para Debian, Ubuntu, Kali o sistemas similares."
     exit 1
   fi
 }

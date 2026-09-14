@@ -22,10 +22,18 @@ sudo apt install curl
 
 ### How to install
 
-Installation is very simple with this command, you can use it to install and use
+Installation is very simple with this command, you can use it to install and use.
+
+For Fedora or Fedora-based systems:
 
 ```
 curl -fsSL https://raw.githubusercontent.com/Mendozainc-dev/ICSim-Cicata/main/install.sh | bash
+```
+
+For Debian or similar systems like Ubuntu, Kali Linux, Linux Mint, Parrot OS, etc.:
+
+```
+curl -fsSL https://raw.githubusercontent.com/Mendozainc-dev/ICSim-Cicata/main/install_debian.sh | bash
 ```
 
 >Your first question is, where is my project? This command is program, to install all the files in a single directory, and where is the directory, this directory is always in the home folder, so Just look in the Home folder
