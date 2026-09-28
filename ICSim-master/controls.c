@@ -574,32 +574,9 @@ int main(int argc, char *argv[]) {
 
   // GUI Setup
   SDL_Window *window = NULL;
-  if(SDL_Init ( SDL_INIT_VIDEO | SDL_INIT_JOYSTICK ) < 0 ) {
+  if(SDL_Init ( SDL_INIT_VIDEO ) < 0 ) {
         printf("SDL Could not initializes\n");
         exit(40);
-  }
-  if( SDL_NumJoysticks() < 1) {
-	printf(" Warning: No joysticks connected\n");
-  } else {
-	if(SDL_IsGameController(0)) {
-	  gGameController = SDL_GameControllerOpen(0);
-	  if(gGameController == NULL) {
-		printf(" Warning: Unable to open game controller. %s\n", SDL_GetError() );
-	  } else {
-		gJoystick = SDL_GameControllerGetJoystick(gGameController);
-		gHaptic = SDL_HapticOpenFromJoystick(gJoystick);
-		print_joy_info();
-	  }
-        } else {
-		gJoystick = SDL_JoystickOpen(0);
-		if(gJoystick == NULL) {
-			printf(" Warning: Could not open joystick\n");
-		} else {
-			gHaptic = SDL_HapticOpenFromJoystick(gJoystick);
-			if (gHaptic == NULL) printf("No Haptic support\n");
-			print_joy_info();
-		}
-	}
   }
   window = SDL_CreateWindow("CANBus Control Panel", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
   if(window == NULL) {
@@ -610,8 +587,6 @@ int main(int argc, char *argv[]) {
   base_texture = SDL_CreateTextureFromSurface(renderer, image);
   SDL_RenderCopy(renderer, base_texture, NULL, NULL);
   SDL_RenderPresent(renderer);
-  int button, axis; // Used for checking dynamic joystick mappings
-
   while(running) {
     while( SDL_PollEvent(&event) != 0 ) {
         switch(event.type) {
@@ -628,15 +603,6 @@ int main(int argc, char *argv[]) {
                 break;
 	    case SDL_KEYDOWN:
 		switch(event.key.keysym.sym) {
-		    case SDLK_UP:
-			throttle = 1;
-			break;
-		    case SDLK_LEFT:
-			turning = -1;
-			break;
-		    case SDLK_RIGHT:
-			turning = 1;
-			break;
 		    case SDLK_LSHIFT:
 			lock_enabled = 1;
 			if(unlock_enabled) send_lock(CAN_DOOR1_LOCK | CAN_DOOR2_LOCK | CAN_DOOR3_LOCK | CAN_DOOR4_LOCK);
@@ -678,13 +644,6 @@ int main(int argc, char *argv[]) {
 	   	break;
 	    case SDL_KEYUP:
 		switch(event.key.keysym.sym) {
-		    case SDLK_UP:
-			throttle = -1;
-			break;
-		    case SDLK_LEFT:
-		    case SDLK_RIGHT:
-			turning = 0;
-			break;
 		    case SDLK_LSHIFT:
 			lock_enabled = 0;
 			break;
@@ -693,109 +652,22 @@ int main(int argc, char *argv[]) {
 			break;
 		}
 		break;
-	    case SDL_JOYAXISMOTION:
-		axis = event.jaxis.axis;
-		if(axis == gAxisLeftH) {
-			ud(event.jaxis.value);
-		} else if(axis == gAxisLeftV) {
-			turn(event.jaxis.value);
-		} else if(axis == gAxisR2) {
-			accelerate(event.jaxis.value);
-		} else if(axis == gAxisRightH ||
-			  axis == gAxisRightV ||
-			  axis == gAxisL2 ||
-			  axis == gJoyX ||
-			  axis == gJoyY ||
-			  axis == gJoyZ) {
-			// Do nothing, the axis is known just not connected
-		} else {
-			if (debug) printf("Unkown axis: %d\n", event.jaxis.axis);
-		}
-		break;
-	    case SDL_JOYBUTTONDOWN:
-                button = event.jbutton.button;
-		if(button == gButtonLock) {
-			lock_enabled = 1;
-			if(unlock_enabled) send_lock(CAN_DOOR1_LOCK | CAN_DOOR2_LOCK | CAN_DOOR3_LOCK | CAN_DOOR4_LOCK);
-		} else if(button == gButtonUnlock) {
-			unlock_enabled = 1;
-			if(lock_enabled) send_unlock(CAN_DOOR1_LOCK | CAN_DOOR2_LOCK | CAN_DOOR3_LOCK | CAN_DOOR4_LOCK);
-		} else if(button == gButtonA) {
-			if(lock_enabled) {
-				send_lock(CAN_DOOR1_LOCK);
-			} else if(unlock_enabled) {
-				send_unlock(CAN_DOOR1_LOCK);
-			}
-			kk_check(SDLK_a);
-		} else if (button == gButtonB) {
-			if(lock_enabled) {
-				send_lock(CAN_DOOR2_LOCK);
-			} else if(unlock_enabled) {
-				send_unlock(CAN_DOOR2_LOCK);
-			}
-			kk_check(SDLK_b);
-		} else if (button == gButtonX) {
-			if(lock_enabled) {
-				send_lock(CAN_DOOR3_LOCK);
-			} else if(unlock_enabled) {
-				send_unlock(CAN_DOOR3_LOCK);
-			}
-			kk_check(SDLK_x);
-		} else if (button == gButtonY) {
-			if(lock_enabled) {
-				send_lock(CAN_DOOR4_LOCK);
-			} else if(unlock_enabled) {
-				send_unlock(CAN_DOOR4_LOCK);
-			}
-			kk_check(SDLK_y);
-		} else if (button == gButtonStart) {
-			kk_check(SDLK_RETURN);
-		} else {
-			if(debug) printf("Unassigned button: %d\n", event.jbutton.button);
-		}
-		break;
-	    case SDL_JOYBUTTONUP:
-		button = event.jbutton.button;
-		if(button == gButtonLock) {
-			lock_enabled = 0;
-		} else if(button == gButtonUnlock) {
-			unlock_enabled = 0;
-		} else {
-			//if(debug) printf("Unassigned button: %d\n", event.jbutton.button);
-		}
-		break;
-	    case SDL_JOYDEVICEADDED:
-		// Only use the first controller
-		if(event.cdevice.which == 0) {
-			gJoystick = SDL_JoystickOpen(0);
-			if(gJoystick) {
-				gHaptic = SDL_HapticOpenFromJoystick(gJoystick);
-				print_joy_info();
-			}
-		}
-		break;
-	    case SDL_JOYDEVICEREMOVED:
-		if(event.cdevice.which == 0) {
-			SDL_JoystickClose(gJoystick);
-			gJoystick = NULL;
-		}
-		break;
-	    case SDL_CONTROLLERDEVICEADDED:
-		// Only use the first controller
-		if(gGameController == NULL) {
-			gGameController = SDL_GameControllerOpen(0);
-			gJoystick = SDL_GameControllerGetJoystick(gGameController);
-			gHaptic = SDL_HapticOpenFromJoystick(gJoystick);
-			print_joy_info();
-		}
-		break;
-	    case SDL_CONTROLLERDEVICEREMOVED:
-		if(event.cdevice.which == 0) {
-			SDL_GameControllerClose(gGameController);
-			gGameController = NULL;
-		}
-		break;
         }
+    }
+    const Uint8 *keyboard_state = SDL_GetKeyboardState(NULL);
+    if(keyboard_state[SDL_SCANCODE_UP]) {
+        throttle = 1;
+    } else if(keyboard_state[SDL_SCANCODE_DOWN]) {
+        throttle = -1;
+    } else {
+        throttle = 0;
+    }
+    if(keyboard_state[SDL_SCANCODE_LEFT]) {
+        turning = -1;
+    } else if(keyboard_state[SDL_SCANCODE_RIGHT]) {
+        turning = 1;
+    } else {
+        turning = 0;
     }
     currentTime = SDL_GetTicks();
     checkAccel();
@@ -806,7 +678,6 @@ int main(int argc, char *argv[]) {
   close(s);
   SDL_DestroyTexture(base_texture);
   SDL_FreeSurface(image);
-  SDL_GameControllerClose(gGameController);
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);
   SDL_Quit();
