@@ -29,6 +29,7 @@ cd "$APP_DIR"
 
 ICSIM_DIR="$APP_DIR/ICSim-master"
 REQUIREMENTS="$APP_DIR/main/requirements.txt"
+PYTHON_ENV="$APP_DIR/.venv"
 
 install_system_packages() {
   echo "Instalando dependencias del sistema para Fedora (dnf)"
@@ -77,15 +78,10 @@ compile_icsim() {
 }
 
 install_python_packages() {
-  echo "Instalando librerias de Python de forma global (python3)"
-  if sudo python3 -m pip install --upgrade pip &&
-    sudo python3 -m pip install -r "$REQUIREMENTS"; then
-    return 0
-  fi
-
-  echo "El entorno Python esta protegido; se instalara de forma global con --break-system-packages"
-  sudo python3 -m pip install --upgrade pip --break-system-packages
-  sudo python3 -m pip install --break-system-packages -r "$REQUIREMENTS"
+  echo "Instalando librerias de Python en un entorno virtual"
+  python3 -m venv "$PYTHON_ENV"
+  "$PYTHON_ENV/bin/python" -m pip install --upgrade pip
+  "$PYTHON_ENV/bin/python" -m pip install -r "$REQUIREMENTS"
 }
 
 verify_icsim() {
@@ -116,7 +112,7 @@ sudo ip link add dev vcan0 type vcan 2>/dev/null || true
 sudo ip link set up vcan0 2>/dev/null || true
 
 cd "$APP_DIR"
-python3 "$APP_DIR/main/main.py" "\$@"
+"$PYTHON_ENV/bin/python" "$APP_DIR/main/main.py" "\$@"
 EOF
 
   sudo chmod +x /usr/local/bin/iov-fuzz
@@ -164,4 +160,4 @@ start_icsim_simulators
 
 clear
 
-python3 "$APP_DIR/main/main.py" </dev/tty
+"$PYTHON_ENV/bin/python" "$APP_DIR/main/main.py" </dev/tty
