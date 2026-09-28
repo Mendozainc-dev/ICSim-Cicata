@@ -59,7 +59,13 @@ class RandomCANFuzzerTests(unittest.TestCase):
     def test_packet_limit_and_csv_output_without_socketcan(self):
         with tempfile.TemporaryDirectory() as directory:
             output_path = Path(directory) / "frames.csv"
-            fuzzer = RandomCANFuzzer(seed=7, delay=0, output_path=str(output_path))
+            log_dir = Path(directory) / "logs"
+            fuzzer = RandomCANFuzzer(
+                seed=7,
+                delay=0,
+                output_path=str(output_path),
+                log_dir=log_dir,
+            )
             bus = RecordingBus()
             fuzzer.bus = bus
 
@@ -68,11 +74,17 @@ class RandomCANFuzzerTests(unittest.TestCase):
 
             with output_path.open(newline="", encoding="utf-8") as output_file:
                 rows = list(csv.DictReader(output_file))
+                reports = list(log_dir.glob("fuzz-*.txt"))
 
         self.assertEqual(len(bus.messages), 3)
         self.assertTrue(bus.closed)
         self.assertEqual(len(rows), 3)
         self.assertEqual(rows[0]["seed"], "7")
+        self.assertEqual(len(reports), 1)
+        report = reports[0].read_text(encoding="utf-8")
+        self.assertIn("Tramas enviadas: 3", report)
+        self.assertIn("CONCLUSIÓN", report)
+        self.assertIn("no confirma por sí solo", report)
 
     def test_parse_can_id_accepts_decimal_and_hex(self):
         self.assertEqual(parse_can_id("580"), 580)
