@@ -24,6 +24,10 @@ ICSIM_CAN_IDS = [
     0x244,
     0x133,
 ]
+ICSIM_SHARED_IDS = {
+    0x188: "señales de giro",
+    0x244: "velocidad del tablero",
+}
 
 
 class RandomCANFuzzer:
@@ -35,6 +39,7 @@ class RandomCANFuzzer:
         self.running = False
         self.total_sent = 0
         self.start_time = 0.0
+        self.sent_by_id = {can_id: 0 for can_id in self.target_ids}
 
     def connect(self) -> None:
         try:
@@ -65,9 +70,21 @@ class RandomCANFuzzer:
         self.running = True
         self.total_sent = 0
         self.start_time = time.time()
+        self.sent_by_id = {can_id: 0 for can_id in self.target_ids}
 
         console.print("[FUZZER] Iniciando fuzzing CAN", style=tittle)
         console.print(f"[FUZZER] Interfaz: {self.interface} | Delay: {self.delay}s | Límite: {max_packets or 'sin límite'}", style=tittle)
+        shared_ids = [
+            f"0x{can_id:03X} ({name})"
+            for can_id, name in ICSIM_SHARED_IDS.items()
+            if can_id in self.target_ids
+        ]
+        if shared_ids:
+            console.print(
+                f"[AVISO] IDs que comparten con ICSim: {', '.join(shared_ids)}. "
+                "Las tramas aleatorias pueden alterar esos indicadores.",
+                style=error,
+            )
         console.print("[FUZZER] Presiona Ctrl+C para detener\n", style=tittle)
 
         try:
@@ -75,6 +92,7 @@ class RandomCANFuzzer:
                 frame = self.generate_random_frame()
                 self.bus.send(frame)
                 self.total_sent += 1
+                self.sent_by_id[frame.arbitration_id] = self.sent_by_id.get(frame.arbitration_id, 0) + 1
 
                 if self.total_sent % 50 == 0:
                     self.show_status(frame)
@@ -95,12 +113,23 @@ class RandomCANFuzzer:
         elapsed = time.time() - self.start_time
         rate = self.total_sent / elapsed if elapsed > 0 else 0
         payload = frame.data.hex(" ").upper()
+        can_id = f"0x{frame.arbitration_id:08X}" if frame.is_extended_id else f"0x{frame.arbitration_id:03X}"
+        id_counts = " | ".join(
+            f"0x{can_id:03X}: {count}"
+            for can_id, count in sorted(self.sent_by_id.items())
+        )
 
         console.print(
-            f"[STATUS] Tramas inyectadas: {self.total_sent} | "
-            f"Tasa: {rate:.2f} pkts/sec | "
-            f"Última ID: {hex(frame.arbitration_id)} | "
-            f"Payload: {payload}",
+            f"[STATUS] Enviadas: {self.total_sent} | "
+            f"Tiempo: {elapsed:.1f}s | Tasa: {rate:.2f} tramas/s"
+        )
+        console.print(
+            f"[TRAMA] ID: {can_id} | DLC: {frame.dlc} | "
+            f"Formato: {'extendido' if frame.is_extended_id else 'estándar'} | "
+            f"Datos: {payload}"
+        )
+        console.print(
+            f"[POR ID] {id_counts}",
             style=status,
         )
 
