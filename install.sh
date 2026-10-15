@@ -74,6 +74,14 @@ compile_icsim() {
     exit 1
   fi
 
+  # Asegurar que data/sample-can.log exista para que Meson no falle al regenerar
+  mkdir -p "$ICSIM_DIR/data"
+  if [[ ! -f "$ICSIM_DIR/data/sample-can.log" ]]; then
+    echo "(1600000000.000001) vcan0 188#000000" > "$ICSIM_DIR/data/sample-can.log"
+    echo "(1600000000.010002) vcan0 244#00000000" >> "$ICSIM_DIR/data/sample-can.log"
+    echo "(1600000000.020003) vcan0 19B#000000" >> "$ICSIM_DIR/data/sample-can.log"
+  fi
+
   cd "$ICSIM_DIR"
   if [[ ! -d "builddir" ]]; then
     meson setup builddir

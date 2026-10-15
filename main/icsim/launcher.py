@@ -47,6 +47,15 @@ class ICSimLauncher:
             console.print(f"[ERROR] No existe el directorio {self.icsim_dir}", style=error_style)
             return False
 
+        # Asegurar que sample-can.log exista para meson
+        sample_log = self.icsim_dir / "data" / "sample-can.log"
+        if not sample_log.exists():
+            sample_log.parent.mkdir(parents=True, exist_ok=True)
+            sample_log.write_text(
+                "(1600000000.000001) vcan0 188#000000\n(1600000000.010002) vcan0 244#00000000\n",
+                encoding="utf-8",
+            )
+
         console.print(translator.t("launcher.compiling"), style=status_style)
         try:
             # Si no existe builddir, inicializar con meson setup

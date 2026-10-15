@@ -34,10 +34,32 @@ ICSIM_DIR="$APP_DIR/ICSim-master"
 REQUIREMENTS="$APP_DIR/main/requirements.txt"
 PYTHON_ENV="$APP_DIR/.venv"
 
+wait_for_apt_lock() {
+  local max_wait=40
+  local waited=0
+  while sudo fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1 || sudo fuser /var/lib/apt/lists/lock >/dev/null 2>&1; do
+    if [ $waited -eq 0 ]; then
+      echo "[AVISO] apt o dpkg está bloqueado por otro proceso del sistema (actualizaciones automáticas en segundo plano)."
+      echo "Esperando a que se libere /var/lib/dpkg/lock-frontend..."
+    fi
+    sleep 3
+    waited=$((waited + 3))
+    if [ $waited -ge $max_wait ]; then
+      echo "[ERROR] El gestor de paquetes sigue bloqueado después de $max_wait segundos."
+      echo "Comprueba qué proceso lo está usando con: ps aux | grep -E 'apt|dpkg'"
+      echo "Una vez finalizado, vuelve a ejecutar el instalador."
+      exit 1
+    fi
+  done
+}
+
 install_system_packages() {
   echo "[1/6] Instalando dependencias del sistema para Debian/Ubuntu/Kali (apt)..."
   if command -v apt-get >/dev/null 2>&1; then
-    sudo apt-get update
+    wait_for_apt_lock
+    # Ignorar errores de repositorios externos rotos en apt-get update
+    sudo apt-get update -o Acquire::AllowInsecureRepositories=true -o Acquire::AllowDowngradeToInsecureRepositories=true || true
+    wait_for_apt_lock
     sudo apt-get install -y \
       can-utils \
       curl \
@@ -74,6 +96,14 @@ compile_icsim() {
   if [[ ! -d "$ICSIM_DIR" ]]; then
     echo "[ERROR] No se encontró la carpeta $ICSIM_DIR"
     exit 1
+  fi
+
+  # Asegurar que data/sample-can.log exista para que Meson no falle al regenerar
+  mkdir -p "$ICSIM_DIR/data"
+  if [[ ! -f "$ICSIM_DIR/data/sample-can.log" ]]; then
+    echo "(1600000000.000001) vcan0 188#000000" > "$ICSIM_DIR/data/sample-can.log"
+    echo "(1600000000.010002) vcan0 244#00000000" >> "$ICSIM_DIR/data/sample-can.log"
+    echo "(1600000000.020003) vcan0 19B#000000" >> "$ICSIM_DIR/data/sample-can.log"
   fi
 
   cd "$ICSIM_DIR"

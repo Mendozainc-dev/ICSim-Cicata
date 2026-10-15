@@ -35,8 +35,21 @@ except ImportError:
 
     can = MockCan()  # type: ignore
 
-from rich.console import Console
-from rich.style import Style
+try:
+    from rich.console import Console
+    from rich.style import Style
+except ImportError:
+    class Style:  # type: ignore
+        def __init__(self, *args, **kwargs):
+            pass
+
+    class Console:  # type: ignore
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def print(self, *args, **kwargs):
+            end = kwargs.get("end", "\n")
+            print(*(str(a) for a in args), end=end)
 
 from .can_message import (
     ICSIM_CAN_IDS,
