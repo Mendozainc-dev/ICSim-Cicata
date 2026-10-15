@@ -1,0 +1,28 @@
+REPORTE DE EJECUCIÓN - FUZZER CAN
+======================================
+Inicio: 2026-10-15T01:17:33+00:00
+Fin: 2026-10-15T01:17:33+00:00
+Interfaz: vcan0
+Modo: random
+IDs objetivo: 0x080, 0x110, 0x188, 0x244, 0x133
+Delay configurado: 0.005 s
+Límite de tramas: 50
+Límite de duración: sin límite s
+Semilla: 832567
+Tramas en corpus: no aplica
+CSV de salida: no solicitado
+
+RESULTADO
+Estado: Límite de tramas alcanzado (50)
+Tramas enviadas: 50
+Duración real: 0.263 s
+Tasa media: 190.27 tramas/s
+Tramas por ID:
+  0x080: 10
+  0x110: 12
+  0x133: 9
+  0x188: 7
+  0x244: 12
+
+CONCLUSIÓN
+Se enviaron 50 tramas y la ejecución terminó por: Límite de tramas alcanzado (50). El envío no confirma por sí solo que el objetivo haya fallado o tenga una vulnerabilidad.

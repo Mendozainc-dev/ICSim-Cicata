@@ -1,0 +1,24 @@
+REPORTE DE EVALUACIÓN DE IDS AUTOMOTRIZ (ISO/SAE 21434)
+========================================================
+Fecha de evaluación: 2026-10-15T01:33:25
+Total de tramas evaluadas: 50
+Duración analizada: 0.26 s
+
+PARÁMETROS Y UMBRALES CONFIGURADOS
+  - Umbral de frecuencia máxima: 80.0 Hz
+  - Límite de velocidad permitida: 260.0 km/h
+  - IDs autorizados (Lista blanca): 0x080, 0x110, 0x188, 0x244, 0x133, 0x19B
+
+RESUMEN DE ALERTAS DE INTRUSIÓN
+  Total alertas detectadas: 0
+  - Regla 1 (Frecuencia anómala / Flood): 0
+  - Regla 2 (Carga útil fuera de rango): 0
+  - Regla 3 (ID no reconocido en red): 0
+
+DETALLE DE ALERTAS DETECTADAS:
+  Ninguna alerta detectada. El tráfico se ajusta a las reglas de normalidad.
+
+RECOMENDACIONES DE MITIGACIÓN (ISO/SAE 21434)
+1. Despliegue de Gateway con filtrado por lista blanca a nivel de capa de enlace.
+2. Limitación de tasa de paquetes (Rate Limiting) para mitigar vectores de inundación DoS.
+3. Verificación de integridad y validación de tipos y rangos de datos en ECUs destino.

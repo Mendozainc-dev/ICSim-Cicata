@@ -1,0 +1,6 @@
+{
+  "name": "ICSim-Cicata",
+  "description": "Entorno virtualizado para la evaluación de vulnerabilidades mediante fuzzing en protocolos de comunicación vehicular",
+  "prompt": "Entorno virtualizado para evaluación de vulnerabilidades en protocolos de comunicación vehicular mediante fuzzing y simulación de cluster CAN bus ICSim",
+  "capabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
