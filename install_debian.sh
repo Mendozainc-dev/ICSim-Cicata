@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# ==============================================================================
+# Script de instalación para Debian, Ubuntu, Kali Linux, Linux Mint, Parrot OS
+# Proyecto: ICSim-Cicata (Entorno virtualizado para evaluación de vulnerabilidades)
+# ==============================================================================
 set -euo pipefail
 
 APP_DIR="$HOME/.Proyecto-fuzz-cicata"
@@ -7,20 +11,19 @@ SCRIPT_DIR=""
 
 if [[ -n "${BASH_SOURCE[0]:-}" && -f "${BASH_SOURCE[0]}" ]]; then
   SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-  if [[ -d "$SCRIPT_DIR/ICSim-master" ]]; then
+  if [[ -d "$SCRIPT_DIR/ICSim-master" && -d "$SCRIPT_DIR/main" ]]; then
     APP_DIR="$SCRIPT_DIR"
   fi
 fi
 
 if [[ "$APP_DIR" != "${SCRIPT_DIR:-}" ]]; then
   if [[ -d "$APP_DIR/.git" ]]; then
-    echo "El proyecto ya fue instalado"
-    echo "Se hara un pull para actualizar el proyecto"
+    echo "[INFO] El proyecto ya está presente en $APP_DIR. Actualizando repositorio..."
     find "$APP_DIR" -type d -name '__pycache__' -prune -exec rm -rf {} + 2>/dev/null || true
     find "$APP_DIR" -type f -name '*.pyc' -delete 2>/dev/null || true
-    git -C "$APP_DIR" pull --ff-only
+    git -C "$APP_DIR" pull --ff-only || true
   else
-    echo "Descargando Proyecto-fuzz-cicata"
+    echo "[INFO] Clonando repositorio en $APP_DIR..."
     git clone "$REPO" "$APP_DIR"
   fi
 fi
@@ -32,8 +35,7 @@ REQUIREMENTS="$APP_DIR/main/requirements.txt"
 PYTHON_ENV="$APP_DIR/.venv"
 
 install_system_packages() {
-  echo "Instalando dependencias del sistema para Debian, Ubuntu, Kali o similares (apt)"
-
+  echo "[1/6] Instalando dependencias del sistema para Debian/Ubuntu/Kali (apt)..."
   if command -v apt-get >/dev/null 2>&1; then
     sudo apt-get update
     sudo apt-get install -y \
@@ -53,62 +55,66 @@ install_system_packages() {
       iproute2 \
       kmod
   else
-    echo "Error: No se encontro apt-get. Este script es para Debian, Ubuntu, Kali o sistemas similares."
+    echo "[ERROR] No se encontró apt-get. Este script está diseñado para Debian, Ubuntu, Kali o derivados."
     exit 1
   fi
 }
 
 setup_vcan() {
-  echo "Cargando y levantando la interfaz SocketCAN virtual (vcan0)"
-  sudo modprobe vcan
+  echo "[2/6] Configurando y levantando interfaz SocketCAN virtual (vcan0)..."
+  sudo modprobe can 2>/dev/null || true
+  sudo modprobe vcan 2>/dev/null || true
   sudo ip link add dev vcan0 type vcan 2>/dev/null || true
-  sudo ip link set up vcan0
+  sudo ip link set up vcan0 2>/dev/null || true
+  ip link show vcan0 || echo "[AVISO] No se pudo verificar vcan0; se intentará levantar en tiempo de ejecución."
 }
 
 compile_icsim() {
+  echo "[3/6] Compilando el simulador vehicular ICSim con Meson..."
   if [[ ! -d "$ICSIM_DIR" ]]; then
-    echo "No se encontro el simulador en $ICSIM_DIR"
+    echo "[ERROR] No se encontró la carpeta $ICSIM_DIR"
     exit 1
   fi
 
-  echo "Compilando el simulador ICSim con Meson"
   cd "$ICSIM_DIR"
-  rm -rf builddir
-  meson setup builddir
+  if [[ ! -d "builddir" ]]; then
+    meson setup builddir
+  fi
   meson compile -C builddir
   cd "$APP_DIR"
 }
 
 install_python_packages() {
-  echo "Instalando librerias de Python en un entorno virtual"
-  python3 -m venv "$PYTHON_ENV"
+  echo "[4/6] Configurando entorno virtual de Python e instalando requirements.txt..."
+  if [[ ! -d "$PYTHON_ENV" ]]; then
+    python3 -m venv "$PYTHON_ENV"
+  fi
   "$PYTHON_ENV/bin/python" -m pip install --upgrade pip
   "$PYTHON_ENV/bin/python" -m pip install -r "$REQUIREMENTS"
 }
 
-verify_icsim() {
+verify_installation() {
+  echo "[5/6] Verificando compilación e integridad..."
   local icsim_bin="$ICSIM_DIR/builddir/icsim"
   local controls_bin="$ICSIM_DIR/builddir/controls"
 
   if [[ ! -x "$icsim_bin" ]]; then
-    echo "La compilacion de ICSim fallo: no existe $icsim_bin"
+    echo "[ERROR] Falló la compilación de ICSim: no existe $icsim_bin"
     exit 1
   fi
 
   if [[ ! -x "$controls_bin" ]]; then
-    echo "La compilacion de Controls fallo: no existe $controls_bin"
+    echo "[ERROR] Falló la compilación de Controls: no existe $controls_bin"
     exit 1
   fi
-
-  echo "Verificando la interfaz vcan0"
-  ip link show vcan0
+  echo "[OK] Binarios de ICSim y Controls verificados correctamente."
 }
 
 create_global_command() {
-  echo "Creando acceso directo global..."
-
+  echo "[6/6] Creando comando global 'iov-fuzz'..."
   cat <<EOF | sudo tee /usr/local/bin/iov-fuzz >/dev/null
 #!/usr/bin/env bash
+sudo modprobe can 2>/dev/null || true
 sudo modprobe vcan 2>/dev/null || true
 sudo ip link add dev vcan0 type vcan 2>/dev/null || true
 sudo ip link set up vcan0 2>/dev/null || true
@@ -118,48 +124,25 @@ cd "$APP_DIR"
 EOF
 
   sudo chmod +x /usr/local/bin/iov-fuzz
-  echo "Comando global 'iov-fuzz' instalado correctamente."
+  echo "[OK] Comando 'iov-fuzz' instalado en /usr/local/bin/iov-fuzz."
 }
 
-open_simulator_terminal() {
-  local title="$1"
-  local command="$2"
-  local log_file="$APP_DIR/${title// /_}.log"
-  local run_command="cd '$ICSIM_DIR/builddir' && $command"
-
-  if [[ -n "${DISPLAY:-}" ]] && command -v gnome-terminal >/dev/null 2>&1; then
-    gnome-terminal --title "$title" -- bash -lc "$run_command; exec bash" >/dev/null 2>&1 &
-  elif [[ -n "${DISPLAY:-}" ]] && command -v konsole >/dev/null 2>&1; then
-    konsole --new-tab -p "tabtitle=$title" -e bash -lc "$run_command; exec bash" >/dev/null 2>&1 &
-  elif [[ -n "${DISPLAY:-}" ]] && command -v xfce4-terminal >/dev/null 2>&1; then
-    xfce4-terminal --title "$title" --command "bash -lc \"$run_command; exec bash\"" >/dev/null 2>&1 &
-  elif [[ -n "${DISPLAY:-}" ]] && command -v xterm >/dev/null 2>&1; then
-    xterm -T "$title" -e bash -lc "$run_command; exec bash" >/dev/null 2>&1 &
-  else
-    echo "No se encontro una terminal grafica compatible. Ejecutando $title en segundo plano."
-    echo "Log: $log_file"
-    (
-      cd "$ICSIM_DIR/builddir"
-      bash -lc "$command"
-    ) >"$log_file" 2>&1 &
-  fi
-}
-
-start_icsim_simulators() {
-  echo "Iniciando simuladores ICSim"
-  open_simulator_terminal "ICSim" "./icsim vcan0"
-  open_simulator_terminal "ICSim Controls" "./controls vcan0"
-  sleep 1
-}
-
+# Ejecutar etapas
 install_system_packages
 setup_vcan
 compile_icsim
 install_python_packages
-verify_icsim
+verify_installation
 create_global_command
-start_icsim_simulators
 
-clear
+echo "================================================================="
+echo " Instalación completada con éxito. Puedes iniciar la CLI con:"
+echo "   iov-fuzz"
+echo " o ejecutando directamente:"
+echo "   $PYTHON_ENV/bin/python $APP_DIR/main/main.py"
+echo "================================================================="
 
-"$PYTHON_ENV/bin/python" "$APP_DIR/main/main.py" </dev/tty
+# Iniciar automáticamente si se ejecuta interactivamente en una terminal
+if [[ -t 0 ]]; then
+  "$PYTHON_ENV/bin/python" "$APP_DIR/main/main.py"
+fi
